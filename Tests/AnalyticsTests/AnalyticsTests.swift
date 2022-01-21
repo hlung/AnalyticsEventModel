@@ -2,10 +2,13 @@ import XCTest
 @testable import Analytics
 
 final class AnalyticsTests: XCTestCase {
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(Analytics().text, "Hello, World!")
-    }
+  func testExample() throws {
+    let event = Event(.click)
+    event.add(.what(.button))
+
+    XCTAssertEqual(event.dictionary, [
+      "name": "click",
+      "what": "button"
+    ])
+  }
 }
