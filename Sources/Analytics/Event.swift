@@ -48,7 +48,7 @@ extension Event {
   enum Parameter {
     case what(What)
 
-    enum What: String, StringRepresentable {
+    enum What: String, HasStringRawValue {
       case button
     }
 
@@ -59,26 +59,12 @@ extension Event {
 
     var value: String {
       let mirror = Mirror(reflecting: self)
-      return (mirror.children.first?.value as? StringRepresentable)?.string ?? ""
+      return (mirror.children.first?.value as? HasStringRawValue)?.rawValue ?? ""
     }
   }
 
 }
 
-protocol StringRepresentable {
+protocol HasStringRawValue {
   var rawValue: String { get }
-}
-
-extension StringRepresentable {
-  var string: String { rawValue }
-}
-
-@propertyWrapper final class Param<Value> {
-    var wrappedValue: Value
-    let name: String
-
-    fileprivate init(wrappedValue: Value, name: String) {
-        self.wrappedValue = wrappedValue
-        self.name = name
-    }
 }
