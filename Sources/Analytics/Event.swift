@@ -24,10 +24,8 @@ class Event {
     dictionary[parameter.key] = parameter.value
   }
 
-  static func click(what: Parameter.What) -> Event {
-    let event = Event(.click)
-    event.add(.what(.download_button))
-    return event
+  static func click(what: What) -> Event {
+    Event(.click, .what(what))
   }
 
 }
@@ -48,18 +46,20 @@ extension Event {
     case error
   }
 
+  enum What: String, HasStringRawValue {
+    case media
+    case download_button
+  }
+
+  enum Page: String, HasStringRawValue {
+    case home
+    case download_popup
+  }
+
   enum Parameter {
     case what(What)
     case page(Page)
     case page_id(String)
-
-    enum What: String, HasStringRawValue {
-      case download_button
-    }
-
-    enum Page: String, HasStringRawValue {
-      case home_page
-    }
 
     var key: String {
       let mirror = Mirror(reflecting: self)

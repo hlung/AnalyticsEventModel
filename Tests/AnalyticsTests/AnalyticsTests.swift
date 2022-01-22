@@ -3,24 +3,25 @@ import XCTest
 
 final class AnalyticsTests: XCTestCase {
   func test_add_functions() throws {
-    let event = Event(.click, .what(.download_button))
-    event.add(.page(.home_page))
+    let event = Event(.click)
+    event.add(.what(.download_button))
+    event.add(.page(.home))
     event.add(.page_id("123"))
-    
+
     XCTAssertEqual(event.name, .click)
     XCTAssertEqual(event.dictionary, [
       "what": "download_button",
-      "page": "home_page",
+      "page": "home",
       "page_id": "123"
     ])
   }
 
   func test_click_function() throws {
-    let event = Event.click(what: .download_button)
+    let event = Event.click(what: .media)
 
     XCTAssertEqual(event.name, .click)
     XCTAssertEqual(event.dictionary, [
-      "what": "download_button"
+      "what": "media"
     ])
   }
 }
