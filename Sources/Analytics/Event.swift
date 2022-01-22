@@ -24,25 +24,10 @@ class Event {
     dictionary[parameter.key] = parameter.value
   }
 
-  func add(_ parameters: [Parameter]) {
-    for parameter in parameters {
-      dictionary[parameter.key] = parameter.value
-    }
-  }
-
   static func click(what: Parameter.What) -> Event {
-    return Event(.click).what(what)
-  }
-
-  // We can use property wrapper here...
-  @discardableResult func what(_ value: Parameter.What) -> Event {
-    dictionary["what"] = value.rawValue
-    return self
-  }
-
-  @discardableResult func `where`(_ value: Parameter.Where) -> Event {
-    dictionary["where"] = value.rawValue
-    return self
+    let event = Event(.click)
+    event.add(.what(.download_button))
+    return event
   }
 
 }
@@ -67,18 +52,13 @@ extension Event {
     case what(What)
     case page(Page)
     case page_id(String)
-    case `where`(Where)
 
     enum What: String, HasStringRawValue {
       case download_button
     }
 
     enum Page: String, HasStringRawValue {
-      case home
-    }
-
-    enum Where: String, HasStringRawValue {
-      case delete_download_popup
+      case home_page
     }
 
     var key: String {

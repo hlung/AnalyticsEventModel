@@ -4,29 +4,14 @@ import XCTest
 final class AnalyticsTests: XCTestCase {
   func test_add_functions() throws {
     let event = Event(.click, .what(.download_button))
-    event.add(.where(.delete_download_popup))
-    event.add([
-      .page(.home),
-      .page_id("123")
-    ])
+    event.add(.page(.home_page))
+    event.add(.page_id("123"))
+    
     XCTAssertEqual(event.name, .click)
     XCTAssertEqual(event.dictionary, [
       "what": "download_button",
-      "where": "delete_download_popup",
-      "page": "home",
+      "page": "home_page",
       "page_id": "123"
-    ])
-  }
-
-  func test_function_chaining() throws {
-    let event = Event(.click)
-      .what(.download_button)
-      .where(.delete_download_popup)
-
-    XCTAssertEqual(event.name, .click)
-    XCTAssertEqual(event.dictionary, [
-      "what": "download_button",
-      "where": "delete_download_popup"
     ])
   }
 
