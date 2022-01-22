@@ -73,7 +73,3 @@ extension Event {
   }
 
 }
-
-private protocol HasStringRawValue {
-  var rawValue: String { get }
-}
