@@ -1,27 +1,20 @@
 import Foundation
 
-/** New Analytics
- Goals
- - Swifty and fast to call
- - Autocomplete
- - Highly composable
+/**
+ A new analytics event model, with better APIs while still compatible with current Vikilitics library.
+ Goals:
+ - Swifty API - Easy to use at call site.
+ - Autocompletion - Suggest for all possible values for each key.
+ - Compact - Event initialization and all parameters setting can be done in one line.
+ - Composable - Allow adding parameters after init, e.g. in if statements.
  */
-
-/*
- Example
- -------
-
- let event = Event(.click)
- event.add(.what(.home))
-
- */
-
 class Event {
 
+  let name: Name
   var dictionary: [String: String] = [:]
 
   init(_ name: Name, _ parameters: Parameter...) {
-    dictionary["name"] = name.rawValue
+    self.name = name
     for parameter in parameters {
       dictionary[parameter.key] = parameter.value
     }
@@ -41,6 +34,13 @@ class Event {
 
 extension Event {
 
+  // Note: I intentionally use snake case for ALL enums' names because:
+  // - it is more searchable
+  // - easier to maintain. no need to update every time we add a new key or value
+  // - we can use Mirror to directly get the final String to log
+  //
+  // Open for discussion :)
+
   enum Name: String {
     case click
     case sv
@@ -52,6 +52,7 @@ extension Event {
     case what(What)
     case page(Page)
     case page_id(String)
+    case `where`(Where)
 
     enum What: String, HasStringRawValue {
       case download_button
@@ -61,30 +62,16 @@ extension Event {
       case home
     }
 
-    var key: String {
-      // Option 1
-      // We could use Mirror here. But I think having snake case strings improves searchability.
-//      switch self {
-//      case .what: return "what"
-//      case .page: return "page"
-//      }
+    enum Where: String, HasStringRawValue {
+      case delete_download_popup
+    }
 
-      // Option 2
-      // Declare enum in snake case to improve searchability and use Mirror :P
+    var key: String {
       let mirror = Mirror(reflecting: self)
       return mirror.children.first?.label ?? ""
     }
 
     var value: String {
-      // Option 1
-      // Use snake case values defined in enum rawValue
-//      switch self {
-//      case .what(let value): return value.rawValue
-//      case .page(let value): return value.rawValue
-//      }
-
-      // Option 2
-      // Declare enum in snake case to improve searchability and use Mirror :P
       let mirror = Mirror(reflecting: self)
       let value: Any? = mirror.children.first?.value
       if let string = (value as? HasStringRawValue)?.rawValue {
@@ -105,6 +92,6 @@ extension Event {
 
 }
 
-protocol HasStringRawValue {
+private protocol HasStringRawValue {
   var rawValue: String { get }
 }
