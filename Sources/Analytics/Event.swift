@@ -11,21 +11,34 @@ import Foundation
 class Event {
 
   let name: Name
-  var dictionary: [String: String] = [:]
+  var parameters: [Parameter] = []
+
+  static func click(what: What) -> Event {
+    Event(.click, .what(what))
+  }
 
   init(_ name: Name, _ parameters: Parameter...) {
     self.name = name
     for parameter in parameters {
-      dictionary[parameter.key] = parameter.value
+      self.parameters.append(parameter)
     }
   }
 
   func add(_ parameter: Parameter) {
-    dictionary[parameter.key] = parameter.value
+    parameters.append(parameter)
   }
 
-  static func click(what: What) -> Event {
-    Event(.click, .what(what))
+  var dictionary: [String: String] {
+    var result: [String: String] = [:]
+    let encoder = JSONEncoder()
+    encoder.keyEncodingStrategy = .convertToSnakeCase
+    for parameter in parameters {
+      if let data = try? encoder.encode(parameter),
+         let dictionary = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: String] {
+        result.merge(dictionary) { $1 }
+      }
+    }
+    return result
   }
 
 }
@@ -39,40 +52,30 @@ extension Event {
     case error
   }
 
-  enum What: String, HasStringRawValue {
+  enum What: String {
     case media
     case downloadButton = "download_button"
   }
 
-  enum Page: String, HasStringRawValue {
+  enum Page: String {
     case home
   }
 
-  enum Parameter {
+  enum Parameter: Encodable {
     case what(What)
     case page(Page)
-    case page_id(String)
+    case pageId(String)
 
-    var key: String {
-      let mirror = Mirror(reflecting: self)
-      return mirror.children.first?.label ?? ""
+    private enum CodingKeys: String, CodingKey {
+      case what, page, pageId
     }
 
-    var value: String {
-      let mirror = Mirror(reflecting: self)
-      let value: Any? = mirror.children.first?.value
-      if let string = (value as? HasStringRawValue)?.rawValue {
-        return string
-      }
-      else if let string = value as? String {
-        return string
-      }
-      else {
-        #if DEBUG
-        fatalError("value is invalid")
-        #else
-        return ""
-        #endif
+    func encode(to encoder: Encoder) throws {
+      var container = encoder.container(keyedBy: CodingKeys.self)
+      switch self {
+      case .what(let value): try container.encode(value.rawValue, forKey: .what)
+      case .page(let value): try container.encode(value.rawValue, forKey: .page)
+      case .pageId(let value): try container.encode(value, forKey: .pageId)
       }
     }
   }
