@@ -1,26 +1,26 @@
 import Foundation
 
-class Event {
+public class Event {
 
-  let name: Name
-  var parameters: [Parameter] = []
+  public let name: Name
+  public var parameters: [Parameter] = []
 
-  static func click(what: What) -> Event {
+  public static func click(what: What) -> Event {
     Event(.click, .what(what))
   }
 
-  init(_ name: Name, _ parameters: Parameter...) {
+  public init(_ name: Name, _ parameters: Parameter...) {
     self.name = name
     for parameter in parameters {
       self.parameters.append(parameter)
     }
   }
 
-  func add(_ parameter: Parameter) {
+  public func add(_ parameter: Parameter) {
     parameters.append(parameter)
   }
 
-  var dictionary: [String: String] {
+  public var dictionary: [String: String] {
     var result: [String: String] = [:]
     let encoder = JSONEncoder()
     encoder.keyEncodingStrategy = .convertToSnakeCase
@@ -35,7 +35,7 @@ class Event {
 
 }
 
-extension Event {
+public extension Event {
 
   enum Name: String {
     case click
@@ -62,7 +62,7 @@ extension Event {
       case what, page, pageId
     }
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)
       switch self {
       case .what(let value): try container.encode(value.rawValue, forKey: .what)
