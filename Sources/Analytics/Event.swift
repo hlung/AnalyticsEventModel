@@ -32,13 +32,6 @@ class Event {
 
 extension Event {
 
-  // Note: I intentionally use snake case for ALL enums' names because:
-  // - it is more searchable
-  // - easier to maintain. no need to update every time we add a new key or value
-  // - we can use Mirror to directly get the final String to log
-  //
-  // Open for discussion :)
-
   enum Name: String {
     case click
     case sv
@@ -48,12 +41,11 @@ extension Event {
 
   enum What: String, HasStringRawValue {
     case media
-    case download_button
+    case downloadButton = "download_button"
   }
 
   enum Page: String, HasStringRawValue {
     case home
-    case download_popup
   }
 
   enum Parameter {

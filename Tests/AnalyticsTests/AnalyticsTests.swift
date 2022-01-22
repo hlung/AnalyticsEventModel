@@ -4,7 +4,7 @@ import XCTest
 final class AnalyticsTests: XCTestCase {
   func test_add_functions() throws {
     let event = Event(.click)
-    event.add(.what(.download_button))
+    event.add(.what(.downloadButton))
     event.add(.page(.home))
     event.add(.page_id("123"))
 
