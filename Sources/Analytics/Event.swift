@@ -30,6 +30,21 @@ class Event {
     }
   }
 
+  static func click(what: Parameter.What) -> Event {
+    return Event(.click).what(what)
+  }
+
+  // We can use property wrapper here...
+  @discardableResult func what(_ value: Parameter.What) -> Event {
+    dictionary["what"] = value.rawValue
+    return self
+  }
+
+  @discardableResult func `where`(_ value: Parameter.Where) -> Event {
+    dictionary["where"] = value.rawValue
+    return self
+  }
+
 }
 
 extension Event {
