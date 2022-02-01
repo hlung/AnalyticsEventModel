@@ -4,6 +4,10 @@ public class Event {
 
   public var parameters: [Key: String] = [:]
 
+  public var additionalParameters: [Key: String] = [:] {
+    didSet { parameters.merge(additionalParameters, uniquingKeysWith: { $1 })}
+  }
+
   public var name: Name? {
     get { Name(rawValue: parameters[.name] ?? "") }
     set { parameters[.name] = newValue?.rawValue }
@@ -24,18 +28,12 @@ public class Event {
     set { parameters[.pageId] = newValue }
   }
 
-  // MARK: - Basic initializers
-
-  public init(parameters: [Key: String]) {
-    self.parameters = parameters
-  }
-
-  public init(_ name: Name, _ parameters: [Key: String]) {
+  public init(_ name: Name, _ parameters: [Key: String] = [:]) {
     self.parameters = parameters
     self.parameters[.name] = name.rawValue
   }
 
-  // MARK: - Constrained Event initializers
+  // MARK: - Parameter constrained initializers
 
   public static func click(what: String) -> Event {
     Event(.click, [.what: what])
