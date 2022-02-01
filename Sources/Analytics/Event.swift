@@ -63,6 +63,7 @@ public extension Event {
     case what
     case page
     case pageId = "page_id"
+    case value
   }
 
   enum Page: String {
