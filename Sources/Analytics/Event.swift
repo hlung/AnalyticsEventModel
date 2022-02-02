@@ -29,7 +29,9 @@ public class Event {
   }
 
   public static func sv(page: Page) -> Event {
-    Event(.sv, [.page: page.rawValue])
+    let event = Event(.sv)
+    event.page = page
+    return event
   }
 
 }
