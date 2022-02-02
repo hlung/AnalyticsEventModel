@@ -46,41 +46,30 @@ The `name` is kept outside parameters because it is required by all events.
 
 ### Using property wrapper
 
-Normally, if you pass an instance variable into a property wrapper, it will give you error `"Cannot use instance member 'xxx' within property initializer; property initializers run before 'self' is available"`. However, 
-[EnclosingTypeReferencingWrapper](https://www.swiftbysundell.com/articles/accessing-a-swift-property-wrappers-enclosing-instance/#getting-started) allows us to access instance variable from property wrapper. We need to access the backing `parameters` dictionary inside Event to get and set values. This allows code to go from this:
+Normally, if you pass an instance variable into a property wrapper, it will give you error:
+
+```
+Cannot use instance member 'xxx' within property initializer; 
+property initializers run before 'self' is available
+``` 
+
+However, [EnclosingTypeReferencingWrapper](https://www.swiftbysundell.com/articles/accessing-a-swift-property-wrappers-enclosing-instance/#getting-started) allows us to access instance variable from property wrapper. We need to access the backing `parameters` dictionary inside Event to get and set values. This allows code to go from this:
 
 ```swift
-public class Event {
-
-  public var parameters: [Key: String] = [:]
-
-  public var what: String? {
-    get { parameters[.what] }
-    set { parameters[.what] = newValue }
-  }
-  
-  public var page: Page? {
-    get { Page(rawValue: parameters[.page] ?? "") }
-    set { parameters[.page] = newValue?.rawValue }
-  }
-
-  // ...
-  
+public var what: String? {
+  get { parameters[.what] }
+  set { parameters[.what] = newValue }
 }
 
+public var page: Page? {
+  get { Page(rawValue: parameters[.page] ?? "") }
+  set { parameters[.page] = newValue?.rawValue }
+}
 ```
 
 to this:
 
-```swift
-public class Event {
-
-  public var parameters: [Key: String] = [:]
-  
-  @Parameter(.what) public var what: String?
-  @Parameter(.page) public var page: Page?
-  
-  // ...
-  
-}
+```swift  
+@Parameter(.what) public var what: String?
+@Parameter(.page) public var page: Page?
 ```
