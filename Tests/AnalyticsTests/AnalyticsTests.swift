@@ -3,8 +3,7 @@ import XCTest
 
 final class AnalyticsTests: XCTestCase {
   func test_basic_functionalities() throws {
-    let event = Event.click(what: "download_button")
-    event.page = .home
+    let event = Event.click(what: "download_button", page: .home)
     event.pageId = "123"
     event.merge([.value: "test"])
 

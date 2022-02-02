@@ -21,9 +21,10 @@ public class Event {
 
   // MARK: - Parameter constrained initializers
 
-  public static func click(what: String) -> Event {
+  public static func click(what: String, page: Page) -> Event {
     let event = Event(.click)
     event.what = what
+    event.page = page
     return event
   }
 
@@ -53,7 +54,8 @@ public extension Event {
 
   enum Page: String, RawStringRepresentable {
     case home
-    case downloads
+    case logIn = "sign_in"
+    case signUp = "sign_up_page"
   }
 
 }
