@@ -1,7 +1,8 @@
 import Foundation
 
 public class Event {
-  @Parameter(.name) public var name: Name?
+
+  public var name: Name
   @Parameter(.what) public var what: String?
   @Parameter(.page) public var page: Page?
   @Parameter(.pageId) public var pageId: String?
@@ -11,18 +12,19 @@ public class Event {
     parameters.merge(additionalParameters, uniquingKeysWith: { $1 })
   }
 
-  // The source of truth
   public var parameters: [Key: String] = [:]
 
   public init(_ name: Name, _ parameters: [Key: String] = [:]) {
+    self.name = name
     self.parameters = parameters
-    self.parameters[.name] = name.rawValue
   }
 
   // MARK: - Parameter constrained initializers
 
   public static func click(what: String) -> Event {
-    Event(.click, [.what: what])
+    let event = Event(.click)
+    event.what = what
+    return event
   }
 
   public static func sv(page: Page) -> Event {
@@ -36,7 +38,6 @@ public class Event {
 public extension Event {
 
   enum Key: String {
-    case name
     case what
     case page
     case pageId = "page_id"
@@ -55,38 +56,6 @@ public extension Event {
     case downloads
   }
 
-}
-
-@propertyWrapper
-public struct Parameter<T: RawStringRepresentable> {
-  public typealias ValueKeyPath = ReferenceWritableKeyPath<Event, T?>
-  public typealias SelfKeyPath = ReferenceWritableKeyPath<Event, Self>
-
-  public static subscript(_enclosingInstance instance: Event,
-                   wrapped wrappedKeyPath: ValueKeyPath,
-                   storage storageKeyPath: SelfKeyPath) -> T? {
-    get {
-      let propertyWrapper = instance[keyPath: storageKeyPath]
-      guard let rawValue = instance.parameters[propertyWrapper.key] else { return nil }
-      return T(rawValue: rawValue)
-    }
-    set {
-      let propertyWrapper = instance[keyPath: storageKeyPath]
-      instance.parameters[propertyWrapper.key] = newValue?.rawValue
-    }
-  }
-
-  @available(*, unavailable, message: "@Can only be applied to classes")
-  public var wrappedValue: T? {
-    get { fatalError() }
-    set { fatalError() }
-  }
-
-  private let key: Event.Key
-
-  init(_ key: Event.Key) {
-    self.key = key
-  }
 }
 
 extension String: RawStringRepresentable {

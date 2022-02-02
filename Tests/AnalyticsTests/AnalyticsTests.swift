@@ -17,7 +17,6 @@ final class AnalyticsTests: XCTestCase {
     XCTAssertEqual(event.parameters, [
       .page: "home",
       .pageId: "123",
-      .name: "click",
       .what: "download_button",
       .value: "test",
     ])
