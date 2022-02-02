@@ -7,6 +7,7 @@ final class AnalyticsTests: XCTestCase {
     event.page = .home
     event.pageId = "123"
     event.additionalParameters = [.value: "foo"]
+    event.value = "haha"
 
     XCTAssertEqual(event.name, .click)
     XCTAssertEqual(event.parameters, [

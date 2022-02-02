@@ -33,6 +33,9 @@ public class Event {
     self.parameters[.name] = name.rawValue
   }
 
+  @Parameter(.value) var value: String?
+  @Parameter(.page) var newPage: Page?
+
   // MARK: - Parameter constrained initializers
 
   public static func click(what: String) -> Event {
@@ -64,9 +67,48 @@ public extension Event {
     case value
   }
 
-  enum Page: String {
+  enum Page: String, RawStringRepresentable {
     case home
     case downloads
   }
 
+}
+
+@propertyWrapper
+struct Parameter<T: RawStringRepresentable> {
+  typealias ValueKeyPath = ReferenceWritableKeyPath<Event, T?>
+  typealias SelfKeyPath = ReferenceWritableKeyPath<Event, Self>
+
+  static subscript(_enclosingInstance instance: Event,
+                   wrapped wrappedKeyPath: ValueKeyPath,
+                   storage storageKeyPath: SelfKeyPath) -> T? {
+    get {
+      let propertyWrapper = instance[keyPath: storageKeyPath]
+      return instance.parameters[propertyWrapper.key] as? T
+    }
+    set {
+      let propertyWrapper = instance[keyPath: storageKeyPath]
+      instance.parameters[propertyWrapper.key] = newValue?.rawValue
+    }
+  }
+
+  @available(*, unavailable, message: "@Can only be applied to classes")
+  var wrappedValue: T? {
+    get { fatalError() }
+    set { fatalError() }
+  }
+
+  private let key: Event.Key
+
+  init(_ key: Event.Key) {
+    self.key = key
+  }
+}
+
+extension String: RawStringRepresentable {
+  var rawValue: String { self }
+}
+
+protocol RawStringRepresentable {
+  var rawValue: String { get }
 }
