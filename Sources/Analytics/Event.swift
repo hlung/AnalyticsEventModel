@@ -1,40 +1,23 @@
 import Foundation
 
 public class Event {
+  @Parameter(.name) public var name: Name?
+  @Parameter(.what) public var what: String?
+  @Parameter(.page) public var page: Page?
+  @Parameter(.pageId) public var pageId: String?
+  @Parameter(.value) public var value: String?
 
+  public func merge(_ additionalParameters: [Key: String]) {
+    parameters.merge(additionalParameters, uniquingKeysWith: { $1 })
+  }
+
+  // The source of truth
   public var parameters: [Key: String] = [:]
-
-  public var additionalParameters: [Key: String] = [:] {
-    didSet { parameters.merge(additionalParameters, uniquingKeysWith: { $1 })}
-  }
-
-  public var name: Name? {
-    get { Name(rawValue: parameters[.name] ?? "") }
-    set { parameters[.name] = newValue?.rawValue }
-  }
-
-  public var what: String? {
-    get { parameters[.what] }
-    set { parameters[.what] = newValue }
-  }
-
-  public var page: Page? {
-    get { Page(rawValue: parameters[.page] ?? "") }
-    set { parameters[.page] = newValue?.rawValue }
-  }
-
-  public var pageId: String? {
-    get { parameters[.pageId] }
-    set { parameters[.pageId] = newValue }
-  }
 
   public init(_ name: Name, _ parameters: [Key: String] = [:]) {
     self.parameters = parameters
     self.parameters[.name] = name.rawValue
   }
-
-  @Parameter(.value) var value: String?
-  @Parameter(.page) var newPage: Page?
 
   // MARK: - Parameter constrained initializers
 
@@ -52,19 +35,19 @@ public class Event {
 
 public extension Event {
 
-  enum Name: String {
-    case click
-    case sv
-    case impression
-    case error
-  }
-
   enum Key: String {
     case name
     case what
     case page
     case pageId = "page_id"
     case value
+  }
+
+  enum Name: String, RawStringRepresentable {
+    case click
+    case sv
+    case impression
+    case error
   }
 
   enum Page: String, RawStringRepresentable {
@@ -75,16 +58,17 @@ public extension Event {
 }
 
 @propertyWrapper
-struct Parameter<T: RawStringRepresentable> {
-  typealias ValueKeyPath = ReferenceWritableKeyPath<Event, T?>
-  typealias SelfKeyPath = ReferenceWritableKeyPath<Event, Self>
+public struct Parameter<T: RawStringRepresentable> {
+  public typealias ValueKeyPath = ReferenceWritableKeyPath<Event, T?>
+  public typealias SelfKeyPath = ReferenceWritableKeyPath<Event, Self>
 
-  static subscript(_enclosingInstance instance: Event,
+  public static subscript(_enclosingInstance instance: Event,
                    wrapped wrappedKeyPath: ValueKeyPath,
                    storage storageKeyPath: SelfKeyPath) -> T? {
     get {
       let propertyWrapper = instance[keyPath: storageKeyPath]
-      return instance.parameters[propertyWrapper.key] as? T
+      guard let rawValue = instance.parameters[propertyWrapper.key] else { return nil }
+      return T(rawValue: rawValue)
     }
     set {
       let propertyWrapper = instance[keyPath: storageKeyPath]
@@ -93,7 +77,7 @@ struct Parameter<T: RawStringRepresentable> {
   }
 
   @available(*, unavailable, message: "@Can only be applied to classes")
-  var wrappedValue: T? {
+  public var wrappedValue: T? {
     get { fatalError() }
     set { fatalError() }
   }
@@ -106,9 +90,11 @@ struct Parameter<T: RawStringRepresentable> {
 }
 
 extension String: RawStringRepresentable {
-  var rawValue: String { self }
+  public var rawValue: String { self }
+  public init?(rawValue: String) { self = rawValue }
 }
 
-protocol RawStringRepresentable {
+public protocol RawStringRepresentable {
   var rawValue: String { get }
+  init?(rawValue: String)
 }

@@ -6,16 +6,20 @@ final class AnalyticsTests: XCTestCase {
     let event = Event.click(what: "download_button")
     event.page = .home
     event.pageId = "123"
-    event.additionalParameters = [.value: "foo"]
-    event.value = "haha"
+    event.merge([.value: "test"])
 
     XCTAssertEqual(event.name, .click)
+    XCTAssertEqual(event.what, "download_button")
+    XCTAssertEqual(event.page, .home)
+    XCTAssertEqual(event.pageId, "123")
+    XCTAssertEqual(event.value, "test")
+
     XCTAssertEqual(event.parameters, [
       .page: "home",
       .pageId: "123",
       .name: "click",
       .what: "download_button",
-      .value: "foo"
+      .value: "test",
     ])
   }
 }
