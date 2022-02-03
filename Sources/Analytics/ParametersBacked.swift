@@ -1,7 +1,7 @@
 import Foundation
 
 @propertyWrapper
-public struct Parameter<T: RawStringRepresentable> {
+public struct ParametersBacked<T: RawStringRepresentable> {
   public typealias ValueKeyPath = ReferenceWritableKeyPath<Event, T?>
   public typealias SelfKeyPath = ReferenceWritableKeyPath<Event, Self>
 

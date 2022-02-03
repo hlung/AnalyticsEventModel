@@ -3,23 +3,23 @@ import Foundation
 public class Event {
 
   public var name: Name
-  @Parameter(.what) public var what: String?
-  @Parameter(.page) public var page: Page?
-  @Parameter(.pageId) public var pageId: String?
-  @Parameter(.value) public var value: String?
-
-  public func merge(_ additionalParameters: [Key: String]) {
-    parameters.merge(additionalParameters, uniquingKeysWith: { $1 })
-  }
-
   public var parameters: [Key: String] = [:]
+
+  @ParametersBacked(.what) public var what: String?
+  @ParametersBacked(.page) public var page: Page?
+  @ParametersBacked(.pageId) public var pageId: String?
+  @ParametersBacked(.value) public var value: String?
 
   public init(_ name: Name, _ parameters: [Key: String] = [:]) {
     self.name = name
     self.parameters = parameters
   }
 
-  // MARK: - Parameter constrained initializers
+  public func merge(_ additionalParameters: [Key: String]) {
+    parameters.merge(additionalParameters, uniquingKeysWith: { $1 })
+  }
+
+  // MARK: - Constrained events
 
   public static func click(what: String, page: Page) -> Event {
     let event = Event(.click)
