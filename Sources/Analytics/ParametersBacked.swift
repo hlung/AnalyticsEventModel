@@ -19,7 +19,7 @@ public struct ParametersBacked<T: RawStringRepresentable> {
     }
   }
 
-  @available(*, unavailable, message: "@Can only be applied to classes")
+  @available(*, unavailable, message: "Can only be applied to classes")
   public var wrappedValue: T? {
     get { fatalError() }
     set { fatalError() }
@@ -31,4 +31,3 @@ public struct ParametersBacked<T: RawStringRepresentable> {
     self.key = key
   }
 }
-

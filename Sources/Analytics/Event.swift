@@ -2,7 +2,7 @@ import Foundation
 
 public class Event {
 
-  public var name: Name
+  public let name: Name
   public var parameters: [Key: String] = [:]
 
   @ParametersBacked(.what) public var what: String?
@@ -47,7 +47,7 @@ public extension Event {
     case value
   }
 
-  enum Name: String, RawStringRepresentable {
+  enum Name: String {
     case click
     case sv
     case impression
