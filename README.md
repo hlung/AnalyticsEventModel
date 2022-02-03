@@ -1,4 +1,4 @@
-# Analytics
+# AnalyticsEventModel
 
 A better design of "Event model" for analytics libraries.
 
@@ -46,6 +46,7 @@ The `name` is kept outside parameters because it is required by all events.
 
 ### Using property wrapper
 
+Using just simple property getter/setter to wrap around parameters dictionary works fine. But I want to further make code more clear. 
 Normally, if you pass an instance variable into a property wrapper, it will give you error:
 
 ```
