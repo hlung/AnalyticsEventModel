@@ -8,9 +8,9 @@ Specifying parameters for analytics events using pure dictionary is troublesome.
 
 ## Goals
 
-- Swifty API - Super fast to write, with clarity and brevity, and with auto completion where needed.
-- Compact - Event initialization and all parameters setting can be done in one line.
-- Composable - Allow adding arbitrary parameters after init.
+- Swifty API - Fast to write, with auto completion where possible.
+- Compact - Event initialization can be done in one line.
+- Composable - Allow adding parameters after init. Some parameter has to be set conditionally.
 - Constrainable - Allow constraining some event to have a specific set of parameters.
 
 ## Design detail
